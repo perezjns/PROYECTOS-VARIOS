@@ -1,201 +1,85 @@
-# 🎬 Buscador y Descargador Automatizado de Vídeos de Pixabay
+# 🎬 Buscador y Descargador Dinámico de Videos Stock (Pixabay)
 
-## 📌 Descripción del proyecto
+Este script en Python automatiza la búsqueda y descarga de videos de stock gratuitos desde la API de **Pixabay** a partir de un archivo de texto con tu guion (`GUION.txt`). 
 
-Este proyecto consiste en desarrollar una herramienta automatizada en Python capaz de analizar un guion de texto y buscar material audiovisual relacionado con su contenido mediante la API de Pixabay.
+A diferencia de los buscadores basados en diccionarios estáticos, este script analiza cada línea del guion de forma **100% dinámica**, extrayendo las palabras clave relevantes y generando múltiples combinaciones de búsqueda para obtener material visual variado y evitar repetir siempre los mismos clips.
 
-El programa identifica palabras relevantes, genera consultas visuales en español e inglés y descarga vídeos de stock para facilitar la creación de contenido audiovisual, documentales y vídeos para YouTube.
+---
 
-El objetivo es reducir el tiempo dedicado a buscar manualmente imágenes y vídeos, automatizando parte del proceso de selección y descarga de recursos audiovisuales.
+## ✨ Características Principales
 
-## 🎯 Objetivos
+* **Extracción Dinámica de Palabras Clave:** Limpia el texto de acentos, signos de puntuación y palabras vacías (*stopwords* como artículos, preposiciones y conectores) para quedarse únicamente con los conceptos importantes de cada línea.
+* **Consultas Variadas por Línea:** Para evitar resultados repetitivos, genera hasta 3 búsquedas distintas por cada párrafo o línea del guion (fragmento inicial, fragmento medio y palabras alternadas).
+* **Historial de Descargas (`downloaded_archive.txt`):** Registra los IDs de todos los videos descargados previamente para no volver a bajar el mismo archivo en futuras ejecuciones.
+* **Sistema de Caché Local (`pixabay_cache.json`):** Guarda los resultados de las búsquedas durante 24 horas para acelerar el proceso y respetar los límites de peticiones de la API de Pixabay.
+* **Prioridad de Calidad:** Selecciona automáticamente la mejor resolución disponible (`large`, `medium` o `small`) y realiza descargas seguras mediante archivos temporales (`.part`) para evitar videos corruptos si se interrumpe la conexión.
 
-- Automatizar la búsqueda de vídeos de stock a partir de un guion.
-- Identificar palabras clave relevantes mediante procesamiento de texto.
-- Ampliar las búsquedas utilizando términos en español e inglés.
-- Incorporar sinónimos y conceptos visuales mediante un diccionario temático.
-- Consultar diferentes combinaciones de palabras clave.
-- Descargar vídeos automáticamente desde Pixabay.
-- Evitar descargas duplicadas.
-- Optimizar las consultas mediante un sistema de caché.
+---
 
-## ⚙️ Tecnologías utilizadas
+## 📋 Requisitos Previos
 
-| Tecnología | Aplicación |
-|---|---|
-| Python | Desarrollo del programa |
-| Requests | Consultas HTTP a la API de Pixabay y descarga de vídeos |
-| Pixabay API | Búsqueda de vídeos de stock |
-| Regular Expressions (re) | Extracción y limpieza de palabras |
-| JSON | Almacenamiento de resultados y caché |
-| OS | Gestión de archivos y directorios |
-| Unicode | Normalización de caracteres y eliminación de tildes |
-| Datetime | Control temporal de la caché |
-
-## 🔍 Funcionamiento del programa
-
-El proceso se divide en varias etapas:
-
-### 1. Lectura del guion
-
-El programa lee automáticamente un archivo llamado `GUION.txt`, ubicado en el Escritorio del usuario.
-
-Cada línea de texto se procesa individualmente.
-
-### 2. Limpieza y extracción de palabras clave
-
-Se eliminan signos de puntuación, palabras vacías (stopwords) y elementos que no aportan información visual.
-
-También se normalizan los caracteres para facilitar la identificación de términos con y sin acentos.
-
-### 3. Generación de consultas bilingües
-
-El programa utiliza un diccionario de conceptos visuales para relacionar palabras del guion con términos de búsqueda en inglés.
-
-Por ejemplo:
-
-| Palabra del guion | Consulta visual |
-|---|---|
-| Mente | Human mind psychology |
-| Cerebro | Human brain neuroscience |
-| Evolución | Human evolution science |
-| Civilización | Ancient civilization ruins |
-| Economía | Economy financial markets |
-| Miedo | Fear anxiety darkness |
-| Naturaleza | Nature wildlife landscape |
-
-Se generan diferentes consultas para ampliar las posibilidades de encontrar vídeos relacionados.
-
-### 4. Búsqueda mediante Pixabay API
-
-Se realizan consultas a la API oficial de Pixabay, utilizando los idiomas español e inglés.
-
-La búsqueda contempla:
-- Diferentes combinaciones de palabras.
-- Hasta 50 resultados por consulta.
-- Priorización de resultados populares.
-- Filtro de contenido seguro.
-
-### 5. Descarga automática
-
-Los vídeos encontrados se descargan directamente mediante Requests.
-
-Se priorizan las siguientes calidades:
-
-1. Large.
-2. Medium.
-3. Small.
-
-Los archivos se guardan en formato MP4.
-
-### 6. Control de duplicados
-
-Se utiliza un archivo de registro para identificar los vídeos descargados anteriormente.
-
-De esta manera, el programa evita descargar repetidamente los mismos recursos.
-
-### 7. Sistema de caché
-
-Las búsquedas se almacenan temporalmente en un archivo JSON durante 24 horas.
-
-Esto permite reutilizar resultados anteriores y reducir consultas innecesarias a la API.
-
-## 📁 Estructura de archivos
-
-El programa utiliza la siguiente estructura:
-
-```text
-Desktop/
-│
-├── GUION.txt
-│
-└── stock videos/
-    │
-    ├── pixabay_123456.mp4
-    ├── pixabay_123457.mp4
-    ├── downloaded_archive.txt
-    └── pixabay_cache.json
-```
-
-## 🛠️ Instalación
-
-### Requisitos
-
-- Python 3.9 o superior.
-- Conexión a Internet.
-- Una cuenta y clave API de Pixabay.
+* **Python 3.7** o superior.
+* Una clave de API gratuita de [Pixabay API](https://pixabay.com/api/docs/).
+* Librería `requests` instalada.
 
 ### Instalación de dependencias
 
-Ejecutar en la terminal:
+Ejecuta el siguiente comando en tu terminal para instalar la única dependencia externa necesaria:
 
 ```bash
 pip install requests
 ```
 
-### Configuración de la API
+---
 
-Obtener una clave API desde:
+## 🚀 Cómo Usarlo
 
-https://pixabay.com/api/docs/
+1. **Prepara tu guion:**
+   Crea un archivo llamado `GUION.txt` en tu **Escritorio** (`Desktop`). Escribe cada escena, párrafo o frase en una línea diferente.
 
-Configurar la clave en el programa mediante una variable de entorno o un archivo de configuración local.
+2. **Configura tu API Key:**
+   Abre el archivo `.py` y asegúrate de colocar tu clave en la variable correspondiente (o utiliza variables de entorno si vas a subir el código a un repositorio público):
+   ```python
+   PIXABAY_API_KEY = "TU_CLAVE_API_DE_PIXABAY"
+   ```
 
-**Importante:** no publicar claves API ni credenciales personales en repositorios públicos de GitHub.
+3. **Ejecuta el script:**
+   ```bash
+   python nombre_de_tu_script.py
+   ```
 
-### Ejecución
-
-Guardar el programa Python y colocar el archivo `GUION.txt` en el Escritorio.
-
-Ejecutar:
-
-```bash
-python buscador_pixabay.py
-```
-
-Los vídeos descargados aparecerán automáticamente en la carpeta `stock videos`.
-
-## 📊 Parámetros configurables
-
-El programa permite modificar diferentes parámetros:
-
-| Parámetro | Valor inicial | Descripción |
-|---|---:|---|
-| MAX_QUERIES_PER_LINE | 3 | Número máximo de consultas por línea |
-| MAX_DOWNLOADS_PER_LINE | 3 | Número máximo de vídeos descargados por línea |
-| RESULTADOS_POR_BUSQUEDA | 50 | Resultados consultados por búsqueda |
-| ESPERA_ENTRE_BUSQUEDAS | 1 | Pausa entre consultas, en segundos |
-| CACHE_HORAS | 24 | Tiempo de conservación de resultados en caché |
-
-## 🚀 Posibles mejoras futuras
-
-El proyecto tiene posibilidades de ampliación:
-
-- Incorporar procesamiento de lenguaje natural (NLP).
-- Utilizar técnicas de análisis semántico para interpretar mejor el contenido del guion.
-- Implementar traducción automática de conceptos.
-- Identificar escenas y párrafos con mayor precisión.
-- Incorporar otras plataformas de vídeos de stock mediante sus API.
-- Añadir un sistema de clasificación de vídeos por relevancia.
-- Crear una interfaz gráfica para facilitar su utilización.
-- Generar informes de búsqueda y descarga.
-
-## ⚠️ Consideraciones
-
-- La disponibilidad de resultados depende de la API y del catálogo de Pixabay.
-- No todas las consultas generan vídeos descargables.
-- La búsqueda automática no garantiza que cada vídeo represente exactamente el contenido narrado.
-- Es necesario respetar los límites de solicitudes y las condiciones de uso de Pixabay.
-- Antes de publicar los vídeos, se deben revisar las condiciones de licencia aplicables a cada recurso.
-
-## 👩‍💻 Autora
-
-**Jeanette Pérez Carnota**
-
-Proyecto personal de Python orientado a la automatización de búsquedas audiovisuales, procesamiento de texto y utilización de APIs externas.
-
-GitHub: [jeanette-portfolio](https://github.com/jeanette-portfolio)
+4. **Revisa tus videos:**
+   El programa creará automáticamente una carpeta llamada **`stock videos`** en tu Escritorio, donde guardará todos los clips descargados en formato `.mp4` junto con los archivos de control.
 
 ---
 
-*Proyecto desarrollado con Python como ejercicio práctico de automatización, procesamiento de texto e integración de servicios mediante APIs.*
+## ⚙️ Configuración Personalizable
+
+Al inicio del script puedes ajustar fácilmente los siguientes parámetros según tus necesidades:
+
+| Variable | Valor por defecto | Descripción |
+| :--- | :---: | :--- |
+| `MAX_QUERIES_PER_LINE` | `3` | Número máximo de búsquedas distintas que se harán por cada línea del guion. |
+| `MAX_DOWNLOADS_PER_LINE` | `3` | Cantidad máxima de videos nuevos que se descargarán por cada línea. |
+| `RESULTADOS_POR_BUSQUEDA` | `50` | Cantidad de resultados que se solicitan a Pixabay por consulta (máx. 200). |
+| `ESPERA_ENTRE_BUSQUEDAS` | `1` | Segundos de pausa entre peticiones para evitar bloqueos por límite de velocidad. |
+| `CACHE_HORAS` | `24` | Tiempo en horas que se guardan los resultados en la caché local. |
+
+---
+
+## 📁 Estructura de Archivos Generados
+
+```text
+Desktop/
+├── GUION.txt                   # Tu archivo de entrada con el texto del guion
+└── stock videos/               # Carpeta generada automáticamente
+    ├── pixabay_12345.mp4       # Videos descargados identificados por su ID
+    ├── downloaded_archive.txt  # Registro histórico para evitar duplicados
+    └── pixabay_cache.json      # Caché temporal de consultas a la API
+```
+
+---
+
+## ⚠️ Nota de Seguridad para GitHub
+
+Si vas a publicar este proyecto en un repositorio **público** en GitHub, recuerda **borrar o reemplazar tu `PIXABAY_API_KEY`** antes de hacer `git push` para que nadie más utilice tu cuota de peticiones.
